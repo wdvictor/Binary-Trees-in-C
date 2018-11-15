@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 struct No{
 	int number;
@@ -56,6 +57,18 @@ void addnode(No * root, int number){
 
 	}
 
+}
 
+
+void showtree(No * root){
+	
+	if(root != NULL){ //printf the right subtree
+		printf("%d\n", root->number);
+		showtree(root->right);
+	}
+	if(root != NULL){ //printf the left subtree
+		printf("%d\n", root->number);
+		showtree(root->left);
+	}
 
 }
