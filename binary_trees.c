@@ -235,7 +235,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 		return NULL;
 	}
 
-	No* node = (No *) malloc(sizeof(No));
+	No* node = (No *) calloc(1, sizeof(No));
 	if (node == NULL)
 	{
 		*error = -7;
