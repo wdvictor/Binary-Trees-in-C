@@ -31,10 +31,10 @@ void menu(No* node);
 int getHeight(No * node);
 char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
-No* initNode();
+No* initNode(int number);
 int getHeight(No * node);
 void searchvalue(No * node , int number);
-void addNode(No * root, int number);
+No * addNode(No * root, int number);
 
 void showTree(No * root);
 
@@ -283,7 +283,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 	return node;
 }
 
-No* initNode()
+No* initNode(int number)
 {
 	No* node = (No*)malloc(sizeof(No));
 	if (node == NULL)
@@ -291,14 +291,14 @@ No* initNode()
 		printf("Failed to initialize node.\n");
 		return NULL;
 	}
-
+	node->number = number;
 	node->left = NULL;
 	node->right = NULL;
 
 	return node;
 }
 
-void addNode(No * root, int number) 
+No * addNode(No * root, int number) 
 {
 	No * addNode(No * root, int number) 
 {
