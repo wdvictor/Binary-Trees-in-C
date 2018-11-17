@@ -298,9 +298,8 @@ No* initNode(int number)
 	return node;
 }
 
+
 No * addNode(No * root, int number) 
-{
-	No * addNode(No * root, int number) 
 {
 	if(root == NULL)
 	{			
