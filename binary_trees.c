@@ -129,7 +129,7 @@ void menu(No* node)
 		case 1:
 			printf("Enter a new number:");
 			scanf("%d", &number);
-		 	addNode(node , number);
+		 	node = addNode(node , number);
 		 	/*
 		 	(victor)
 		 		the number added in the tree are added two times, or maybe the showtree
