@@ -3,7 +3,7 @@
 |-------------------------------------------------------------------------------------------|
 |	# ALUNO(S):																				|
 |		- JULIO CESAR LITWIN LIMA	| MATRÍCULA: 16/0129443									|
-|		- VICTOR HUGO 				| MATRÍCULA: 17/0063844								|
+|		- VICTOR HUGO 				| MATRÍCULA: 17/0063844								    |
 |																							|
 ********************************************************************************************/
 
@@ -32,6 +32,7 @@ char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
 
 No* initNode();
+void searchvalue(No * node , int number);
 void addNode(No * root, int number);
 
 void showTree(No * root);
@@ -115,6 +116,7 @@ void menu(No* node)
 		printf("# [1]. Add new Node.                                             #\n");
 		printf("# [2]. Delete node.                                              #\n");
 		printf("# [3]. Show Tree.                                                #\n");
+		printf("# [4]. Search value.                                             #\n");
 		printf("# [9]. Quit                                                      #\n");
 		printf("#                                                                #\n");
 		printf("##################################################################\n");
@@ -137,6 +139,11 @@ void menu(No* node)
 		case 3:
 			showTree(node);
 			break;
+		case 4:
+		printf("Enter with the value to search\n");
+		scanf("%d", &number);
+		searchvalue(node , number);
+		break;
 
 		default:
 			printf("Unknown command, please try again.\n");
@@ -295,9 +302,7 @@ void addNode(No * root, int number)
 	//check if exist some root node
 	if (root == NULL) 
 	{
-		root = (No *)malloc(sizeof(No));
-		root->right = NULL;
-		root->left = NULL;
+		root = initNode();
 		root->number = number;
 		return;
 	}
@@ -306,10 +311,8 @@ void addNode(No * root, int number)
 		if (root->left == NULL)
 		{
 			//if the left node is empty, just put the value there
-			root->left = (No *)malloc(sizeof(No));
+			root->left = initNode();
 			root->left->number = number;
-			root->left->right = NULL;
-			root->left->left = NULL;
 			return;
 		}
 		else 
@@ -325,10 +328,8 @@ void addNode(No * root, int number)
 		if (root->right == NULL)
 		{
 			//if the right node is empty, just put the value there
-			root->right = (No *)malloc(sizeof(No));
+			root->right = initNode();
 			root->right->number = number;
-			root->right->right = NULL;
-			root->right->left = NULL;
 			return;
 		}
 		else 
@@ -354,4 +355,20 @@ void showTree(No * root)
 		showTree(root->left);
 	}
 
+}
+
+void searchvalue(No * node , int number){
+	if(node == NULL){
+		printf("There are no elements in the tree\n");
+		return;
+	}else if(number == node->number){
+		printf("%d\n", node->number);
+		return;
+	}else if(number < node->number){
+		searchvalue(node->left , number);
+	}else if(number > node->number){
+		searchvalue(node->right , number);
+	}else{
+		printf("There are no such element in the tree\n");
+	}
 }
