@@ -3,7 +3,7 @@
 |-------------------------------------------------------------------------------------------|
 |	# ALUNO(S):																				|
 |		- JULIO CESAR LITWIN LIMA	| MATRÍCULA: 16/0129443									|
-|		- VICTOR HUGO 				| MATRÍCULA: 00/0000000									|
+|		- VICTOR HUGO 				| MATRÍCULA: 17/0063844								|
 |																							|
 ********************************************************************************************/
 
@@ -107,18 +107,26 @@ void menu(No* node)
 		printf("# [OPTIONS]:                                                     #\n");
 		printf("# -------------------------------------------------------------- #\n");
 		printf("#                                                                #\n");
-		printf("# [1]. Show Tree.                                                #\n");
+		printf("# [1]. Add new Node.                                             #\n");
+		printf("# [2]. Delete node.                                              #\n");
+		printf("# [3]. Show Tree.                                                #\n");
 		printf("# [9]. Quit                                                      #\n");
 		printf("#                                                                #\n");
 		printf("##################################################################\n");
 
 		scanf("%d", &option);
-
+		int number;
 		switch (option)
 		{
 		case 1:
+			printf("Enter a new number:");
+			scanf("%d", &number);
+		 	addNode(node , number);
+			break;
+		case 3:
 			showTree(node);
 			break;
+
 		default:
 			printf("Unknown command, please try again.\n");
 			break;
@@ -286,7 +294,7 @@ void addNode(No * root, int number)
 	{
 		if (root->left == NULL)
 		{
-			//if the right node is empty, just put the value there
+			//if the left node is empty, just put the value there
 			root->left = (No *)malloc(sizeof(No));
 			root->left->number = number;
 			root->left->right = NULL;
