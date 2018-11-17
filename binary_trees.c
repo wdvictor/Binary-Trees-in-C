@@ -28,10 +28,11 @@ typedef struct No No;
 /* Functions */
 void menu(No* node);
 
+int getHeight(No * node);
 char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
-
 No* initNode();
+int getHeight(No * node);
 void searchvalue(No * node , int number);
 void addNode(No * root, int number);
 
@@ -357,18 +358,50 @@ void showTree(No * root)
 
 }
 
-void searchvalue(No * node , int number){
-	if(node == NULL){
+void searchvalue(No * node , int number)
+{
+	if(node == NULL)
+	{
 		printf("There are no elements in the tree\n");
 		return;
-	}else if(number == node->number){
+	}
+	else if(number == node->number)
+	{
 		printf("%d\n", node->number);
 		return;
-	}else if(number < node->number){
+	}
+	else if(number < node->number)
+	{
 		searchvalue(node->left , number);
-	}else if(number > node->number){
+	}
+	else if(number > node->number)
+	{
 		searchvalue(node->right , number);
-	}else{
+	}
+	else
+	{
 		printf("There are no such element in the tree\n");
 	}
+}
+
+int getHeight(No * node)
+{
+
+	if(node == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		
+		int leftheight = getHeight(node->left);
+		int rightheight = getHeight(node->right);
+		if(leftheight > rightheight){
+			return leftheight + 1;
+		}else{
+			return rightheight + 1;
+		}
+
+	}
+
 }
