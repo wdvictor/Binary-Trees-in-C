@@ -212,7 +212,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 		return NULL;
 	}
 
-	No* node = initNode();
+	No* node = (No *) malloc(sizeof(No));
 	if (node == NULL)
 	{
 		*error = -7;
@@ -269,7 +269,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 			currentValue = atoi(tmpBuffer);
 
 			// Let to add value in our tree.
-			addNode(node, currentValue);
+			node = addNode(node, currentValue);
 
 			// Update next start position from next value.
 			position = (i + 1);
@@ -324,14 +324,8 @@ void showTree(No * root)
 	{ 
 		printf("%d\n", root->number);
 		showTree(root->right);
-	}
-
-	if (root != NULL) 
-	{ 
-		printf("%d\n", root->number);
 		showTree(root->left);
 	}
-
 }
 
 void searchvalue(No * node , int number)
