@@ -300,46 +300,23 @@ No* initNode()
 
 void addNode(No * root, int number) 
 {
-	//check if exist some root node
-	if (root == NULL) 
+	No * addNode(No * root, int number) 
+{
+	if(root == NULL)
+	{			
+		No * tmp = initNode(number);
+		return tmp;
+	}else
 	{
-		root = initNode();
-		root->number = number;
-		return;
-	}
-	else if (number < root->number)
-	{
-		if (root->left == NULL)
+		if(number < root->number)
 		{
-			//if the left node is empty, just put the value there
-			root->left = initNode();
-			root->left->number = number;
-			return;
-		}
-		else 
-		{
-			//other wise repeat the step
-			addNode(root->left, number);
-			return;
+			root->left = addNode(root->left, number);
+		}else
+		{		
+			root->right = addNode(root->right , number);
 		}
 	}
-	else 
-	{
-		//go to right subtree if the number is greater or equal than root value
-		if (root->right == NULL)
-		{
-			//if the right node is empty, just put the value there
-			root->right = initNode();
-			root->right->number = number;
-			return;
-		}
-		else 
-		{
-			//other wise repeat the step
-			addNode(root->right, number);
-			return;
-		}
-	}
+	return root;
 }
 
 void showTree(No * root) 
