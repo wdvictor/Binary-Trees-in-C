@@ -39,6 +39,7 @@ No * addNode(No * root, int number);
 void printInOrder(No * root);
 void printPreOrder(No * root);
 void printPostOrder(No * root);
+void freeTree(No * root);
 
 void showTree(No * root);
 
@@ -51,7 +52,7 @@ int main(int argc, char const *argv[])
 
 	// Read file.
 	No* node = loadTreeFromFile(fileName, &error);
-	if (error != 0 || node == NULL)
+	if (error != 0 || (node == NULL && error != 0))
 	{
 		switch (error)
 		{
@@ -90,6 +91,10 @@ int main(int argc, char const *argv[])
 
 	// Show menu.
 	menu(node);
+
+	free(fileName);
+	freeTree(node);
+	node = NULL;
 
 	return 0;
 }
@@ -243,7 +248,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 	int diff = 0;
 
 	// Get count of spaces.
-	for (i = 0; i <= fileSize; i++)
+	for (i = 0; i < fileSize; i++)
 	{
 		char c = buffer[i];
 
@@ -278,7 +283,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 			}
 
 			// Copy values in string.
-			for(k = 0; k <= diff; k++)
+			for(k = 0; k < diff; k++)
 			{
 				tmpBuffer[k] = buffer[position + k];
 			}
@@ -291,6 +296,8 @@ No* loadTreeFromFile(char* fileName, int* error)
 
 			// Update next start position from next value.
 			position = (i + 1);
+
+			free(tmpBuffer);
 		}
 	}
 
@@ -298,6 +305,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 	fclose(file);
 
 	*error = 0;
+	free(buffer);
 	return node;
 }
 
@@ -425,4 +433,15 @@ void printPostOrder(No * root)
 	printPostOrder(root->left);
 	printPostOrder(root->right);
 	printf("%d ", root->number);
+}
+
+void freeTree(No * root)
+{
+	if(root == NULL){
+		return;
+	}
+
+	freeTree(root->left);
+	freeTree(root->right);
+	free(root);
 }
