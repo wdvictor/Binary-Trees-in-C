@@ -37,6 +37,8 @@ int getHeight(No * node);
 void searchvalue(No * node , int number);
 No * addNode(No * root, int number);
 void printInOrder(No * root);
+void printPreOrder(No * root);
+void printPostOrder(No * root);
 
 void showTree(No * root);
 
@@ -121,6 +123,8 @@ void menu(No* node)
 		printf("# [3]. Show Tree.                                                #\n");
 		printf("# [4]. Search value.                                             #\n");
 		printf("# [5]. Print in order.                                           #\n");
+		printf("# [6]. Print pre order.                                          #\n");
+		printf("# [7]. Print post order.                                         #\n");
 		printf("# [9]. Quit                                                      #\n");
 		printf("#                                                                #\n");
 		printf("##################################################################\n");
@@ -150,6 +154,14 @@ void menu(No* node)
 			break;
 		case 5:
 			printInOrder(node);
+			printf("\n");
+			break;
+		case 6:
+			printPreOrder(node);
+			printf("\n");
+			break;
+		case 7:
+			printPostOrder(node);
 			printf("\n");
 			break;
 		default:
@@ -391,5 +403,26 @@ void printInOrder(No * root)
 	printInOrder(root->left);
 	printf("%d ", root->number);
 	printInOrder(root->right);
+}
 
+void printPreOrder(No * root)
+{
+	if(root == NULL){
+		return;
+	}
+
+	printf("%d ", root->number);
+	printPreOrder(root->left);
+	printPreOrder(root->right);
+}
+
+void printPostOrder(No * root)
+{
+	if(root == NULL){
+		return;
+	}
+
+	printPostOrder(root->left);
+	printPostOrder(root->right);
+	printf("%d ", root->number);
 }
