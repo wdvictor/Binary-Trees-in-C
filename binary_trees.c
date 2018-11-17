@@ -14,7 +14,7 @@
 #include <string.h>
 
 /* Define's */
-#define FILE_NAME			"./BSTs/bst%d.txt"		
+#define FILE_NAME "./BSTs/bst%d.txt"		
 
 /* Struct's */
 struct No 
@@ -96,85 +96,85 @@ int main(int argc, char const *argv[])
 
 void menu(No* node)
 {
-	int option = -1;
+// 	int option = -1;
 
-	do
-	{
-/*
-		// Clear console output.
-#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
-		system("clear");
-#endif
+// 	do
+// 	{
+// /*
+// 		// Clear console output.
+// #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+// 		system("clear");
+// #endif
 
-#if defined(_WIN32) || defined(_WIN64)
-		system("cls");
-#endif
-*/
-//(victor) i had to comment on this because after selecting an option, the output
-//was clean and could no see the results 
+// #if defined(_WIN32) || defined(_WIN64)
+// 		system("cls");
+// #endif
+// */
+// //(victor) i had to comment on this because after selecting an option, the output
+// //was clean and could no see the results 
 
-		printf("##################################################################\n");
-		printf("# -------------------------------------------------------------- #\n");
-		printf("# [OPTIONS]:                                                     #\n");
-		printf("# -------------------------------------------------------------- #\n");
-		printf("#                                                                #\n");
-		printf("# [1]. Add new Node.                                             #\n");
-		printf("# [2]. Delete node.                                              #\n");
-		printf("# [3]. Show Tree.                                                #\n");
-		printf("# [4]. Search value.                                             #\n");
-		printf("# [5]. Print in order.                                           #\n");
-		printf("# [6]. Print pre order.                                          #\n");
-		printf("# [7]. Print post order.                                         #\n");
-		printf("# [9]. Quit                                                      #\n");
-		printf("#                                                                #\n");
-		printf("##################################################################\n");
+// 		printf("##################################################################\n");
+// 		printf("# -------------------------------------------------------------- #\n");
+// 		printf("# [OPTIONS]:                                                     #\n");
+// 		printf("# -------------------------------------------------------------- #\n");
+// 		printf("#                                                                #\n");
+// 		printf("# [1]. Add new Node.                                             #\n");
+// 		printf("# [2]. Delete node.                                              #\n");
+// 		printf("# [3]. Show Tree.                                                #\n");
+// 		printf("# [4]. Search value.                                             #\n");
+// 		printf("# [5]. Print in order.                                           #\n");
+// 		printf("# [6]. Print pre order.                                          #\n");
+// 		printf("# [7]. Print post order.                                         #\n");
+// 		printf("# [9]. Quit                                                      #\n");
+// 		printf("#                                                                #\n");
+// 		printf("##################################################################\n");
 
-		scanf("%d", &option);
-		int number;
-		switch (option)
-		{
-		case 1:
-			printf("Enter a new number:");
-			scanf("%d", &number);
-		 	node = addNode(node , number);
-		 	/*
-		 	(victor)
-		 		the number added in the tree are added two times, or maybe the showtree
-		 		function are showing the option twice
-		 		i belive there second option are more real
-		 	*/
-			break;
-		case 3:
-			showTree(node);
-			break;
-		case 4:
-			printf("Enter with the value to search\n");
-			scanf("%d", &number);
-			searchvalue(node , number);
-			break;
-		case 5:
-			printInOrder(node);
-			printf("\n");
-			break;
-		case 6:
-			printPreOrder(node);
-			printf("\n");
-			break;
-		case 7:
-			printPostOrder(node);
-			printf("\n");
-			break;
-		default:
-			printf("Unknown command, please try again.\n");
-			break;
-		}
-	} while (option != 9);
+// 		scanf("%d", &option);
+// 		int number;
+// 		switch (option)
+// 		{
+// 		case 1:
+// 			printf("Enter a new number:");
+// 			scanf("%d", &number);
+// 		 	node = addNode(node , number);
+// 		 	/*
+// 		 	(victor)
+// 		 		the number added in the tree are added two times, or maybe the showtree
+// 		 		function are showing the option twice
+// 		 		i belive there second option are more real
+// 		 	*/
+// 			break;
+// 		case 3:
+// 			showTree(node);
+// 			break;
+// 		case 4:
+// 			printf("Enter with the value to search\n");
+// 			scanf("%d", &number);
+// 			searchvalue(node , number);
+// 			break;
+// 		case 5:
+// 			printInOrder(node);
+// 			printf("\n");
+// 			break;
+// 		case 6:
+// 			printPreOrder(node);
+// 			printf("\n");
+// 			break;
+// 		case 7:
+// 			printPostOrder(node);
+// 			printf("\n");
+// 			break;
+// 		default:
+// 			printf("Unknown command, please try again.\n");
+// 			break;
+// 		}
+// 	} while (option != 9);
 }
 
 char* getFileName(int index)
 {
 	int len = strlen(FILE_NAME);
-	char* fileName = (char*)malloc(sizeof(char) * len - 1);
+	char* fileName = (char*)malloc(sizeof(char) * len);
 
 	sprintf(fileName, FILE_NAME, index);
 	return fileName;
