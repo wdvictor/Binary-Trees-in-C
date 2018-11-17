@@ -81,6 +81,7 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
+
 	// Show menu.
 	menu(node);
 
@@ -93,6 +94,7 @@ void menu(No* node)
 
 	do
 	{
+/*
 		// Clear console output.
 #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
 		system("clear");
@@ -101,6 +103,9 @@ void menu(No* node)
 #if defined(_WIN32) || defined(_WIN64)
 		system("cls");
 #endif
+*/
+//(victor) i had to comment on this because after selecting an option, the output
+//was clean and could no see the results 
 
 		printf("##################################################################\n");
 		printf("# -------------------------------------------------------------- #\n");
@@ -122,6 +127,12 @@ void menu(No* node)
 			printf("Enter a new number:");
 			scanf("%d", &number);
 		 	addNode(node , number);
+		 	/*
+		 	(victor)
+		 		the number added in the tree are added two times, or maybe the showtree
+		 		function are showing the option twice
+		 		i belive there second option are more real
+		 	*/
 			break;
 		case 3:
 			showTree(node);
@@ -333,14 +344,12 @@ void showTree(No * root)
 {
 	if (root != NULL) 
 	{ 
-		//printf the right subtree
 		printf("%d\n", root->number);
 		showTree(root->right);
 	}
 
 	if (root != NULL) 
 	{ 
-		//printf the left subtree
 		printf("%d\n", root->number);
 		showTree(root->left);
 	}
