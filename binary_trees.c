@@ -4,6 +4,7 @@
 |	# ALUNO(S):																				|
 |		- JULIO CESAR LITWIN LIMA	| MATRÍCULA: 16/0129443									|
 |		- VICTOR HUGO 				| MATRÍCULA: 17/0063844								    |
+|		- KAIQUE HENRIQUE BORGES 	| MATRÍCULA: 17/0014771								    |
 |																							|
 ********************************************************************************************/
 
@@ -35,6 +36,7 @@ No* initNode(int number);
 int getHeight(No * node);
 void searchvalue(No * node , int number);
 No * addNode(No * root, int number);
+void printInOrder(No * root);
 
 void showTree(No * root);
 
@@ -118,6 +120,7 @@ void menu(No* node)
 		printf("# [2]. Delete node.                                              #\n");
 		printf("# [3]. Show Tree.                                                #\n");
 		printf("# [4]. Search value.                                             #\n");
+		printf("# [5]. Print in order.                                           #\n");
 		printf("# [9]. Quit                                                      #\n");
 		printf("#                                                                #\n");
 		printf("##################################################################\n");
@@ -141,11 +144,14 @@ void menu(No* node)
 			showTree(node);
 			break;
 		case 4:
-		printf("Enter with the value to search\n");
-		scanf("%d", &number);
-		searchvalue(node , number);
-		break;
-
+			printf("Enter with the value to search\n");
+			scanf("%d", &number);
+			searchvalue(node , number);
+			break;
+		case 5:
+			printInOrder(node);
+			printf("\n");
+			break;
 		default:
 			printf("Unknown command, please try again.\n");
 			break;
@@ -373,5 +379,17 @@ int getHeight(No * node)
 		}
 
 	}
+
+}
+
+void printInOrder(No * root)
+{
+	if(root == NULL){
+		return;
+	}
+
+	printInOrder(root->left);
+	printf("%d ", root->number);
+	printInOrder(root->right);
 
 }
