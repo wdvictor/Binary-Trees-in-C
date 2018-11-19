@@ -14,7 +14,8 @@
 #include <string.h>
 
 /* Define's */
-#define FILE_NAME			"./BSTs/bst%d.txt"		
+#define FILE_NAME			"./BSTs/bst%d.txt"
+#define MAX_BST_QUANTITY	6
 
 /* Struct's */
 struct No 
@@ -28,6 +29,7 @@ struct No
 typedef struct No No;
 
 /* Functions */
+char* menuFile();
 void menu(No* node);
 
 char* getFileName(int index);
@@ -49,8 +51,7 @@ int main(int argc, char const *argv[])
 {
 	int error = 0;
 
-	// TODO : Add option for choice what index will be to loaded.
-	char* fileName = getFileName(1);
+	char* fileName = menuFile();
 
 	// Read file.
 	No* node = loadTreeFromFile(fileName, &error);
@@ -59,7 +60,7 @@ int main(int argc, char const *argv[])
 		switch (error)
 		{
 		case -1:
-			printf("Failed to read %s file.\n", fileName);
+			printf("File [%s] not found.\n", fileName);
 			break;
 		case -2:
 			printf("Failed to load file, size is 0.\n");
@@ -84,16 +85,92 @@ int main(int argc, char const *argv[])
 			break;
 		}
 
-		// TODO : add for choice again other bst file to load.
-
-		// Exit, because don't laoded with success.
+		// Exit, because file not loaded with success.
 		return -1;
+	}
+	else
+	{
+		printf("File [%s] loaded with successfuly.\n\n", fileName);
 	}
 
 	// Show menu.
 	menu(node);
 
 	return 0;
+}
+
+char* menuFile()
+{
+	// Clear console output.
+#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+	system("clear");
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+	system("cls");
+#endif
+
+	printf("##################################################################\n");
+	printf("# -------------------------------------------------------------- #\n");
+	printf("# [OPTION FOR LOAD BST FILE]:                                    #\n");
+	printf("# -------------------------------------------------------------- #\n");
+	printf("#                                                                #\n");
+	printf("# [1]. Choice number between [1 ~ %d]                             #\n", MAX_BST_QUANTITY);
+	printf("# [2]. Custom file.                                              #\n");
+	printf("# [9]. Quit program.                                             #\n");
+	printf("#                                                                #\n");
+	printf("##################################################################\n\n");
+
+	int option = -1;
+
+	do
+	{
+		printf("> ");
+		scanf("%d", &option);
+		printf("\n");
+
+		switch (option)
+		{
+		case 1:
+		{
+			int number;
+			int valid = 0;
+
+			printf("# Choice number between [1 ~ %d]                                  #\n", MAX_BST_QUANTITY);
+
+			do
+			{
+				printf("> ");
+				scanf("%d", &number);
+				printf("\n");
+
+				valid = (number >= 1 && number <= MAX_BST_QUANTITY) ? 1 : 0;
+
+			} while (valid == 0);
+
+			return getFileName(number);
+		}
+		case 2:
+		{
+			char* name = (char*)malloc(sizeof(char) * _MAX_PATH);
+			printf("# Digit name of file. (example: ./BSTs/customBSTFile.txt)        #\n");
+
+			printf("> ");
+			scanf(" %[^\n]s", name);
+			printf("\n");
+
+			return name;
+		}
+		default:
+			printf("Unknown command, please try again.\n");
+			break;
+		}
+
+		printf("\n");
+
+	} while (option != 9);
+
+	return NULL;
 }
 
 void menu(No* node)
