@@ -14,8 +14,7 @@
 #include <string.h>
 
 /* Define's */
-#define FILE_NAME			"./BSTs/bst%d.txt"
-#define MAX_BST_QUANTITY	6
+#define FILE_NAME			"./BSTs/bst%d.txt"		
 
 /* Struct's */
 struct No 
@@ -29,12 +28,11 @@ struct No
 typedef struct No No;
 
 /* Functions */
-char* menuFile();
 void menu(No* node);
 
 char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
-
+void removeValue(No * root , int value);
 No* initNode(int number);
 No* addNode(No * root, int number);
 int getHeight(No * node);
@@ -51,7 +49,8 @@ int main(int argc, char const *argv[])
 {
 	int error = 0;
 
-	char* fileName = menuFile();
+	// TODO : Add option for choice what index will be to loaded.
+	char* fileName = getFileName(1);
 
 	// Read file.
 	No* node = loadTreeFromFile(fileName, &error);
@@ -60,7 +59,7 @@ int main(int argc, char const *argv[])
 		switch (error)
 		{
 		case -1:
-			printf("File [%s] not found.\n", fileName);
+			printf("Failed to read %s file.\n", fileName);
 			break;
 		case -2:
 			printf("Failed to load file, size is 0.\n");
@@ -85,12 +84,10 @@ int main(int argc, char const *argv[])
 			break;
 		}
 
-		// Exit, because file not loaded with success.
+		// TODO : add for choice again other bst file to load.
+
+		// Exit, because don't laoded with success.
 		return -1;
-	}
-	else
-	{
-		printf("File [%s] loaded with successfuly.\n\n", fileName);
 	}
 
 	// Show menu.
@@ -99,96 +96,19 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-char* menuFile()
-{
-	// Clear console output.
-#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
-	system("clear");
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-	system("cls");
-#endif
-
-	printf("##################################################################\n");
-	printf("# -------------------------------------------------------------- #\n");
-	printf("# [OPTION FOR LOAD BST FILE]:                                    #\n");
-	printf("# -------------------------------------------------------------- #\n");
-	printf("#                                                                #\n");
-	printf("# [1]. Choice number between [1 ~ %d]                             #\n", MAX_BST_QUANTITY);
-	printf("# [2]. Custom file.                                              #\n");
-	printf("# [9]. Quit program.                                             #\n");
-	printf("#                                                                #\n");
-	printf("##################################################################\n\n");
-
-	int option = -1;
-
-	do
-	{
-		printf("> ");
-		scanf("%d", &option);
-		printf("\n");
-
-		switch (option)
-		{
-		case 1:
-		{
-			int number;
-			int valid = 0;
-
-			printf("# Choice number between [1 ~ %d]                                  #\n", MAX_BST_QUANTITY);
-
-			do
-			{
-				printf("> ");
-				scanf("%d", &number);
-				printf("\n");
-
-				valid = (number >= 1 && number <= MAX_BST_QUANTITY) ? 1 : 0;
-
-			} while (valid == 0);
-
-			return getFileName(number);
-		}
-		case 2:
-		{
-			char* name = (char*)malloc(sizeof(char) * _MAX_PATH);
-			printf("# Digit name of file. (example: ./BSTs/customBSTFile.txt)        #\n");
-
-			printf("> ");
-			scanf(" %[^\n]s", name);
-			printf("\n");
-
-			return name;
-		}
-		default:
-			printf("Unknown command, please try again.\n");
-			break;
-		}
-
-		printf("\n");
-
-	} while (option != 9);
-
-	return NULL;
-}
-
 void menu(No* node)
 {
-	int option = -1;
+	int option = -1, input_number;
 
 	printf("##################################################################\n");
 	printf("# -------------------------------------------------------------- #\n");
 	printf("# [OPTIONS]:                                                     #\n");
 	printf("# -------------------------------------------------------------- #\n");
 	printf("#                                                                #\n");
-	printf("# [1]. Add new Node.                                             #\n");
-	printf("# [2]. Delete node.                                              #\n");
-	printf("# [3]. Show Tree.                                                #\n");
+	printf("# [1]. Show Tree.                                                #\n");
+	printf("# [2]. Add value.                                                #\n");
+	printf("# [3]. remove value.                                             #\n");
 	printf("# [4]. Search value.                                             #\n");
-	printf("# [5]. Print in order.                                           #\n");
-	printf("# [6]. Print pre order.                                          #\n");
-	printf("# [7]. Print post order.                                         #\n");
 	printf("# [9]. Quit                                                      #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
@@ -201,44 +121,27 @@ void menu(No* node)
 
 		printf("\n");
 
-		int number;
-
 		switch (option)
 		{
-			case 1:
-				printf("Enter a new number:");
-				scanf("%d", &number);
-			 	node = addNode(node , number);
-			 	/*
-			 	(victor)
-			 		the number added in the tree are added two times, or maybe the showtree
-			 		function are showing the option twice
-			 		i belive there second option are more real
-			 	*/
-				break;
-			case 3:
-				showTree(node);
-				break;
-			case 4:
-				printf("Enter with the value to search\n");
-				scanf("%d", &number);
-				searchvalue(node , number);
-				break;
-			case 5:
-				printInOrder(node);
-				printf("\n");
-				break;
-			case 6:
-				printPreOrder(node);
-				printf("\n");
-				break;
-			case 7:
-				printPostOrder(node);
-				printf("\n");
-				break;
-			default:
-				printf("Unknown command, please try again.\n");
-				break;
+		case 1:
+			showTree(node);
+			break;
+		case 2:
+			printf("Enter with the value\n");
+			scanf("%d", &input_number);
+			node = addNode(node , input_number);
+			break;
+		case 3:
+			printf("Enter with the value to remove\n");
+			scanf("%d", &input_number);
+			removeValue(node , input_number);
+			break;
+
+		case 9:
+			exit(1);
+		default:
+			printf("Unknown command, please try again.\n");
+			break;
 		}
 
 		printf("\n");
@@ -357,7 +260,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 
 			// Now convert this value in string to int.
 			currentValue = atoi(tmpBuffer);
-
+			
 			// Let to add value in our tree.
 			node = addNode(node, currentValue);
 
@@ -505,4 +408,51 @@ void freeTree(No * root)
 	freeTree(root->left);
 	freeTree(root->right);
 	free(root);
+}
+
+void removeValue(No * root , int value)
+{
+	
+	if(root == NULL)
+	{
+		printf("There are no elements in the tree\n");
+		return;
+	}
+	else if(value == root->number)
+	{
+		
+		No * temp = root; 
+
+		if(root->left == NULL){
+			if(root->right == NULL)
+			{
+				root->number = NULL;
+				root->left = NULL;
+				root->right = NULL;
+				return;
+			}
+			root->number = root->right->number;
+			return;
+		}
+		temp = temp->left;
+		while(temp->right != NULL){
+			temp = temp->right;
+		}
+		root->number = temp->number;
+		return;
+
+	}
+	else if(value < root->number)
+	{
+	removeValue(root->left, value);
+	}
+	else if( value >= root->number)
+	{
+	removeValue(root->right, value);
+	}
+	else
+	{
+		printf("There is no such element in the tree\n");
+	}
+
 }
