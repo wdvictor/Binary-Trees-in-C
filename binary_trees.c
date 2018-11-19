@@ -105,7 +105,13 @@ void menu(No* node)
 	printf("# [OPTIONS]:                                                     #\n");
 	printf("# -------------------------------------------------------------- #\n");
 	printf("#                                                                #\n");
-	printf("# [1]. Show Tree.                                                #\n");
+	printf("# [1]. Add new Node.                                             #\n");
+	printf("# [2]. Delete node.                                              #\n");
+	printf("# [3]. Show Tree.                                                #\n");
+	printf("# [4]. Search value.                                             #\n");
+	printf("# [5]. Print in order.                                           #\n");
+	printf("# [6]. Print pre order.                                          #\n");
+	printf("# [7]. Print post order.                                         #\n");
 	printf("# [9]. Quit                                                      #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
@@ -118,14 +124,44 @@ void menu(No* node)
 
 		printf("\n");
 
+		int number;
+
 		switch (option)
 		{
-		case 1:
-			showTree(node);
-			break;
-		default:
-			printf("Unknown command, please try again.\n");
-			break;
+			case 1:
+				printf("Enter a new number:");
+				scanf("%d", &number);
+			 	node = addNode(node , number);
+			 	/*
+			 	(victor)
+			 		the number added in the tree are added two times, or maybe the showtree
+			 		function are showing the option twice
+			 		i belive there second option are more real
+			 	*/
+				break;
+			case 3:
+				showTree(node);
+				break;
+			case 4:
+				printf("Enter with the value to search\n");
+				scanf("%d", &number);
+				searchvalue(node , number);
+				break;
+			case 5:
+				printInOrder(node);
+				printf("\n");
+				break;
+			case 6:
+				printPreOrder(node);
+				printf("\n");
+				break;
+			case 7:
+				printPostOrder(node);
+				printf("\n");
+				break;
+			default:
+				printf("Unknown command, please try again.\n");
+				break;
 		}
 
 		printf("\n");
