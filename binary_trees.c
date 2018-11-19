@@ -3,8 +3,8 @@
 |-------------------------------------------------------------------------------------------|
 |	# ALUNO(S):																				|
 |		- JULIO CESAR LITWIN LIMA	| MATRÍCULA: 16/0129443									|
-|		- VICTOR HUGO 				| MATRÍCULA: 17/0063844								    |
-|		- KAIQUE HENRIQUE BORGES 	| MATRÍCULA: 17/0014771								    |
+|		- VICTOR HUGO 				| MATRÍCULA: 17/0063844									|
+|		- KAIQUE HENRIQUE BORGES 	| MATRÍCULA: 17/0014771									|
 |																							|
 ********************************************************************************************/
 
@@ -14,12 +14,13 @@
 #include <string.h>
 
 /* Define's */
-#define FILE_NAME "./BSTs/bst%d.txt"		
+#define FILE_NAME			"./BSTs/bst%d.txt"		
 
 /* Struct's */
 struct No 
 {
 	int number;
+
 	struct No * left;
 	struct No * right;
 };
@@ -29,13 +30,14 @@ typedef struct No No;
 /* Functions */
 void menu(No* node);
 
-int getHeight(No * node);
 char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
+
 No* initNode(int number);
+No* addNode(No * root, int number);
 int getHeight(No * node);
-void searchvalue(No * node , int number);
-No * addNode(No * root, int number);
+void searchvalue(No * node, int number);
+
 void printInOrder(No * root);
 void printPreOrder(No * root);
 void printPostOrder(No * root);
@@ -52,7 +54,7 @@ int main(int argc, char const *argv[])
 
 	// Read file.
 	No* node = loadTreeFromFile(fileName, &error);
-	if (error != 0 || (node == NULL && error != 0))
+	if (error != 0 || node == NULL)
 	{
 		switch (error)
 		{
@@ -88,98 +90,53 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
-
 	// Show menu.
 	menu(node);
-
-	free(fileName);
-	freeTree(node);
-	node = NULL;
 
 	return 0;
 }
 
 void menu(No* node)
 {
-// 	int option = -1;
+	int option = -1;
 
-// 	do
-// 	{
-// /*
-// 		// Clear console output.
-// #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
-// 		system("clear");
-// #endif
+	printf("##################################################################\n");
+	printf("# -------------------------------------------------------------- #\n");
+	printf("# [OPTIONS]:                                                     #\n");
+	printf("# -------------------------------------------------------------- #\n");
+	printf("#                                                                #\n");
+	printf("# [1]. Show Tree.                                                #\n");
+	printf("# [9]. Quit                                                      #\n");
+	printf("#                                                                #\n");
+	printf("##################################################################\n");
 
-// #if defined(_WIN32) || defined(_WIN64)
-// 		system("cls");
-// #endif
-// */
-// //(victor) i had to comment on this because after selecting an option, the output
-// //was clean and could no see the results 
+	do
+	{
+		printf("> ");
 
-// 		printf("##################################################################\n");
-// 		printf("# -------------------------------------------------------------- #\n");
-// 		printf("# [OPTIONS]:                                                     #\n");
-// 		printf("# -------------------------------------------------------------- #\n");
-// 		printf("#                                                                #\n");
-// 		printf("# [1]. Add new Node.                                             #\n");
-// 		printf("# [2]. Delete node.                                              #\n");
-// 		printf("# [3]. Show Tree.                                                #\n");
-// 		printf("# [4]. Search value.                                             #\n");
-// 		printf("# [5]. Print in order.                                           #\n");
-// 		printf("# [6]. Print pre order.                                          #\n");
-// 		printf("# [7]. Print post order.                                         #\n");
-// 		printf("# [9]. Quit                                                      #\n");
-// 		printf("#                                                                #\n");
-// 		printf("##################################################################\n");
+		scanf("%d", &option);
 
-// 		scanf("%d", &option);
-// 		int number;
-// 		switch (option)
-// 		{
-// 		case 1:
-// 			printf("Enter a new number:");
-// 			scanf("%d", &number);
-// 		 	node = addNode(node , number);
-// 		 	/*
-// 		 	(victor)
-// 		 		the number added in the tree are added two times, or maybe the showtree
-// 		 		function are showing the option twice
-// 		 		i belive there second option are more real
-// 		 	*/
-// 			break;
-// 		case 3:
-// 			showTree(node);
-// 			break;
-// 		case 4:
-// 			printf("Enter with the value to search\n");
-// 			scanf("%d", &number);
-// 			searchvalue(node , number);
-// 			break;
-// 		case 5:
-// 			printInOrder(node);
-// 			printf("\n");
-// 			break;
-// 		case 6:
-// 			printPreOrder(node);
-// 			printf("\n");
-// 			break;
-// 		case 7:
-// 			printPostOrder(node);
-// 			printf("\n");
-// 			break;
-// 		default:
-// 			printf("Unknown command, please try again.\n");
-// 			break;
-// 		}
-// 	} while (option != 9);
+		printf("\n");
+
+		switch (option)
+		{
+		case 1:
+			showTree(node);
+			break;
+		default:
+			printf("Unknown command, please try again.\n");
+			break;
+		}
+
+		printf("\n");
+
+	} while (option != 9);
 }
 
 char* getFileName(int index)
 {
 	int len = strlen(FILE_NAME);
-	char* fileName = (char*)malloc(sizeof(char) * len);
+	char* fileName = (char*)malloc(sizeof(char) * len - 1);
 
 	sprintf(fileName, FILE_NAME, index);
 	return fileName;
@@ -235,11 +192,8 @@ No* loadTreeFromFile(char* fileName, int* error)
 		return NULL;
 	}
 
-	No* node = (No *) calloc(1, sizeof(No));
-	if (node == NULL)
-	{
-		*error = -7;
-	}
+	// BST.
+	No* node = NULL;
 
 	char* tmpBuffer = NULL;
 	int currentValue = 0;
@@ -248,7 +202,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 	int diff = 0;
 
 	// Get count of spaces.
-	for (i = 0; i < fileSize; i++)
+	for (i = 0; i <= fileSize; i++)
 	{
 		char c = buffer[i];
 
@@ -283,7 +237,7 @@ No* loadTreeFromFile(char* fileName, int* error)
 			}
 
 			// Copy values in string.
-			for(k = 0; k < diff; k++)
+			for(k = 0; k <= diff; k++)
 			{
 				tmpBuffer[k] = buffer[position + k];
 			}
@@ -296,8 +250,6 @@ No* loadTreeFromFile(char* fileName, int* error)
 
 			// Update next start position from next value.
 			position = (i + 1);
-
-			free(tmpBuffer);
 		}
 	}
 
@@ -305,7 +257,6 @@ No* loadTreeFromFile(char* fileName, int* error)
 	fclose(file);
 
 	*error = 0;
-	free(buffer);
 	return node;
 }
 
@@ -314,65 +265,60 @@ No* initNode(int number)
 	No* node = (No*)malloc(sizeof(No));
 	if (node == NULL)
 	{
-		printf("Failed to initialize node.\n");
+		printf("Failed to alloc node.\n");
 		return NULL;
 	}
-	node->number = number;
+
 	node->left = NULL;
 	node->right = NULL;
+	node->number = number;
 
 	return node;
 }
 
-
-No * addNode(No * root, int number) 
+No* addNode(No * root, int number) 
 {
-	if(root == NULL)
-	{			
-		No * tmp = initNode(number);
-		return tmp;
-	}else
+	// Check if root is already initialized, if not, let to init.
+	if (root == NULL)
 	{
-		if(number < root->number)
+		No* tmp = initNode(number);
+		return tmp;
+	}
+	else
+	{
+		// Our root is already initialized, then let to compare values in bst and check where we'll to add.
+		if (number < root->number)
 		{
 			root->left = addNode(root->left, number);
-		}else
-		{		
-			root->right = addNode(root->right , number);
+		}
+		else
+		{
+			root->right = addNode(root->right, number);
 		}
 	}
+
 	return root;
 }
 
-void showTree(No * root) 
+void searchvalue(No * node, int number)
 {
-	if (root != NULL) 
-	{ 
-		printf("%d\n", root->number);
-		showTree(root->right);
-		showTree(root->left);
-	}
-}
-
-void searchvalue(No * node , int number)
-{
-	if(node == NULL)
+	if (node == NULL)
 	{
 		printf("There are no elements in the tree\n");
 		return;
 	}
-	else if(number == node->number)
+	else if (number == node->number)
 	{
 		printf("%d\n", node->number);
 		return;
 	}
-	else if(number < node->number)
+	else if (number < node->number)
 	{
-		searchvalue(node->left , number);
+		searchvalue(node->left, number);
 	}
-	else if(number > node->number)
+	else if (number > node->number)
 	{
-		searchvalue(node->right , number);
+		searchvalue(node->right, number);
 	}
 	else
 	{
@@ -382,40 +328,36 @@ void searchvalue(No * node , int number)
 
 int getHeight(No * node)
 {
-
-	if(node == NULL)
-	{
+	if (node == NULL)
 		return 0;
+
+	int leftheight = getHeight(node->left);
+	int rightheight = getHeight(node->right);
+
+	if (leftheight > rightheight)
+	{
+		return leftheight + 1;
 	}
 	else
 	{
-		
-		int leftheight = getHeight(node->left);
-		int rightheight = getHeight(node->right);
-		if(leftheight > rightheight){
-			return leftheight + 1;
-		}else{
-			return rightheight + 1;
-		}
+		return rightheight + 1;
 	}
 }
 
-void showTree(No * root) 
+void showTree(No * root)
 {
-	if (root != NULL) 
-	{ 
-		//printf the right subtree
+	if (root != NULL)
+	{
 		printf("%d\n", root->number);
 		showTree(root->right);
+		showTree(root->left);
 	}
-
 }
 
 void printInOrder(No * root)
 {
-	if(root == NULL){
+	if (root == NULL)
 		return;
-	}
 
 	printInOrder(root->left);
 	printf("%d ", root->number);
@@ -424,9 +366,8 @@ void printInOrder(No * root)
 
 void printPreOrder(No * root)
 {
-	if(root == NULL){
+	if (root == NULL)
 		return;
-	}
 
 	printf("%d ", root->number);
 	printPreOrder(root->left);
@@ -435,9 +376,8 @@ void printPreOrder(No * root)
 
 void printPostOrder(No * root)
 {
-	if(root == NULL){
+	if (root == NULL)
 		return;
-	}
 
 	printPostOrder(root->left);
 	printPostOrder(root->right);
@@ -446,9 +386,8 @@ void printPostOrder(No * root)
 
 void freeTree(No * root)
 {
-	if(root == NULL){
+	if (root == NULL)
 		return;
-	}
 
 	freeTree(root->left);
 	freeTree(root->right);
