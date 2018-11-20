@@ -370,7 +370,9 @@ No * find_node(No * node, int number)
 int getHeight(No * node)
 {
 	if (node == NULL)
+	{
 		return 0;
+	}
 
 	int leftheight = getHeight(node->left);
 	int rightheight = getHeight(node->right);
