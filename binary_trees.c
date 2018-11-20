@@ -50,9 +50,12 @@ void printInOrder(No * root);
 void printPreOrder(No * root);
 void printPostOrder(No * root);
 void freeTree(No * root);
+No* balanceTree(No* root);
 void showTree(No * root);
 int count_tree_nodes(No * root);
 int search_value(No * root, int value, No * father);
+
+
 
 int main(int argc, char const *argv[])
 {
@@ -92,8 +95,6 @@ int main(int argc, char const *argv[])
 			printf("Unknown error.\n");
 			break;
 		}
-
-		// TODO : add for choice again other bst file to load.
 
 		// Exit, because don't laoded with success.
 		return -1;
@@ -187,15 +188,16 @@ void menu(No* node)
 	printf("# -------------------------------------------------------------- #\n");
 	printf("# [OPTIONS]:                                                     #\n");
 	printf("# -------------------------------------------------------------- #\n");
-	printf("# [1]. Show Tree.                                                #\n");
-	printf("# [2]. Add value.                                                #\n");
-	printf("# [3]. remove value.                                             #\n");
-	printf("# [4]. Search value.                                             #\n");
-	printf("# [5]. See if tree is full.                                      #\n");
-	printf("# [6]. Tree height.                                              #\n");
-	printf("# [7]. Print In Order.                                      	 #\n");
-	printf("# [8]. Print Pre Order.                                          #\n");
-	printf("# [9]. Print Post Order.                                         #\n");
+	printf("# [0]. Show Tree.                                                #\n");
+	printf("# [1]. Add value.                                                #\n");
+	printf("# [2]. Remove value.                                             #\n");
+	printf("# [3]. Search value.                                             #\n");
+	printf("# [4]. See if tree is full.                                      #\n");
+	printf("# [5]. Tree height.                                              #\n");
+	printf("# [6]. Print In Order.                                      	 #\n");
+	printf("# [7]. Print Pre Order.                                          #\n");
+	printf("# [8]. Print Post Order.                                         #\n");
+	printf("# [9]. Pega na minha e balança.                                  #\n");
 	printf("# [10]. Quit                                                     #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
@@ -210,20 +212,20 @@ void menu(No* node)
 
 		switch (option)
 		{
-		case 1:
+		case 0:
 			showTree(node);
 			break;
-		case 2:
+		case 1:
 			printf("Enter with the value\n");
 			scanf("%d", &input_number);
 			node = addNode(node, input_number);
 			break;
-		case 3:
+		case 2:
 			printf("Enter with the value to remove\n");
 			scanf("%d", &input_number);
 			node = removeValue(node, input_number);
 			break;
-		case 4:
+		case 3:
 		{
 			printf("Enter with the value to search\n");
 			int n, temp;
@@ -234,23 +236,27 @@ void menu(No* node)
 			printf("################################\n");
 		}
 		break;
-		case 5:
+		case 4:
 			isFull(node, count_tree_nodes(node));
 			break;
-		case 6:
+		case 5:
 			printf("tree height = %d\n", getHeight(node));
 			break;
-		case 7:
+		case 6:
 			printInOrder(node);
 			break;
-		case 8:
+		case 7:
 			printPreOrder(node);
 			break;
-		case 9:
+		case 8:
 			printPostOrder(node);
+			break;
+		case 9:
+			node = balanceTree(node);
 			break;
 		case 10:
 			exit(1);
+			break;
 		default:
 			printf("Unknown command, please try again.\n");
 			break;
@@ -985,4 +991,101 @@ int search_value(No * root, int value, No * father)
 		return 0;
 	}
 
+}
+
+int treeIsBalanced(No* root)
+{
+	if (root == NULL)
+		return 1;
+
+	int leftHeight = getHeight(root->left);
+	int rightHeight = getHeight(root->right);
+	int difference = leftHeight - rightHeight;
+
+	return (difference < -1 || difference > 1) ? 0 : treeIsBalanced(root->left) *
+		treeIsBalanced(root->right);
+}
+
+No* rotationTree(No* root, No* father, No* currentRoot)
+{
+	if (root == NULL || treeIsBalanced(root))
+		return currentRoot;
+
+	currentRoot = rotationTree(root->left, root, currentRoot);
+	if (treeIsBalanced(root))
+		return currentRoot;
+
+	currentRoot = rotationTree(root->right, root, currentRoot);
+	if (treeIsBalanced(root))
+		return currentRoot;
+
+	int leftHeight = getHeight(root->left);
+	int rightHegiht = getHeight(root->right);
+	No* tmpNode = NULL;
+
+	if (leftHeight > rightHegiht)
+	{
+		tmpNode = root->left;
+		if (father == NULL)
+		{
+			root->left = tmpNode->right;
+			tmpNode->right = root;
+
+			currentRoot = tmpNode;
+		}
+		else
+		{
+			if (father->left == root)
+				father->left = tmpNode;
+			else
+				father->right = tmpNode;
+
+			root->left = tmpNode->right;
+			tmpNode->right = root;
+		}
+
+		return currentRoot;
+	}
+	else
+	{
+		tmpNode = root->right;
+		if (father == NULL)
+		{
+			root->right = tmpNode->left;
+			tmpNode->left = root;
+
+			currentRoot = tmpNode;
+		}
+		else
+		{
+			if (father->left == root)
+				father->left = tmpNode;
+			else
+				father->right = tmpNode;
+
+			root->right = tmpNode->left;
+			tmpNode->left = root;
+		}
+
+		return currentRoot;
+	}
+}
+
+No* balanceTree(No* root)
+{
+	if (root == NULL)
+		return NULL;
+
+	if (treeIsBalanced(root))
+	{
+		printf("Binary tree is already balanced.\n");
+		return root;
+	}
+
+	do
+	{
+		root = rotationTree(root, NULL, root);
+	} while (!treeIsBalanced(root));
+
+	return root;
 }
