@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
+//to compile this use -lm parameter
 
 /* Define's */
 #define FILE_NAME			"./BSTs/bst%d.txt"		
@@ -40,15 +43,14 @@ No* initNode(int number);
 No* addNode(No * root, int number);
 int getHeight(No * node);
 No* searchvalue(No * node, int number);
-int isFull(No * node, int size_of_tree);
-
+void isFull(No * node, int size_of_tree);
 void printInOrder(No * root);
 void printPreOrder(No * root);
 void printPostOrder(No * root);
 void freeTree(No * root);
-int file_size(char * fileName);
 void showTree(No * root);
-int tree_size(No * node);
+int count_tree_nodes(No * root);
+
 int main(int argc, char const *argv[])
 {
 	int error = 0;
@@ -114,6 +116,7 @@ void menu(No* node)
 	printf("# [3]. remove value.                                             #\n");
 	printf("# [4]. Search value.                                             #\n");
 	printf("# [5]. See if tree is full.                                      #\n");
+	printf("# [6]. Tree height.                                              #\n");
 	printf("# [9]. Quit                                                      #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
@@ -141,17 +144,20 @@ void menu(No* node)
 			scanf("%d", &input_number);
 			node = removeValue(node , input_number);
 			break;
-		case 5:
-			if(isFull(node, file_size(getFileName(1))) == 1)
-			{
-				printf("Is full\n");
-			}
-			else
-			{
-				printf("Is not full\n");
-			}
+		case 4:
+			printf("Enter with the value to search\n");
+			int n;
+			scanf("%d", &n);
+			No * temp = searchvalue(node, n);
+			if(temp != NULL) printf("Element found in the tree : %d\n", temp->number);
+			free(temp);
 			break;
-
+		case 5:
+			isFull(node, count_tree_nodes(node));
+			break;
+		case 6:
+			printf("tree height = %d\n", getHeight(node));
+			break;
 		case 9:
 			exit(1);
 		default:
@@ -336,7 +342,7 @@ No * searchvalue(No * node, int number)
 	No * temp = NULL;
 	if (node == NULL)
 	{
-		printf("There are no elements in the tree\n");
+		printf("Element not found in the tree or the tree is empty\n");
 		return NULL;
 	}
 	else if (number == node->number)
@@ -471,46 +477,39 @@ No* removeValue(No * root , int value)
 	
 }
 
-
-int file_size(char * fileName)
+void isFull(No * node, int tree_total_elements)
 {
-	FILE * fp = fopen(getFileName(1),"r");
-	char c;
-	int total_numbers = 0;
-
-	while(c = fgetc(fp))
+	/*
+		the tatic where is use the mathematic fuction to see if the tree is full
+		the Sn = (2^h - 1)
+	*/
+	int total_elements = (pow(2, getHeight(node)) - 1);
+	if(total_elements == tree_total_elements)
 	{
-		if(c == EOF){
-			total_numbers++;
-			break;
-		}
-		if(c == ' ')
-		{
-			total_numbers++;
-		}
-	}
-	return total_numbers;
-}
-
-int isFull(No * node, int file_size)
-{
-
-	if(tree_size(node) == file_size)
-	{
-		return 1; //true
+		printf("Is full\n");
 	}
 	else
 	{
-		return 0; //false
+		printf("Is not full\n");
 	}
+	
 }
 
-int tree_size(No * node)
+int count_tree_nodes(No * root)
 {
-	//the size must start with 1 because the main root node do not count in the process
-	int size = 1;
-	if(node == NULL) return 0;
-	size += tree_size(node->left);
-	size += tree_size(node->right);
-	return size;
+	/*
+		the count must start with 1 because the recursive fuction jump
+	the mian root node
+	*/
+	int total = 1;
+	if(root == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		total += count_tree_nodes(root->left);
+		total += count_tree_nodes(root->right);
+		return total;
+	}
 }
