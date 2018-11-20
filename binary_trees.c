@@ -106,6 +106,7 @@ int main(int argc, char const *argv[])
 void menu(No* node)
 {
 	int option = -1, input_number;
+	int answer = 0;
 
 	printf("##################################################################\n");
 	printf("# -------------------------------------------------------------- #\n");
@@ -114,10 +115,11 @@ void menu(No* node)
 	printf("#                                                                #\n");
 	printf("# [1]. Show Tree.                                                #\n");
 	printf("# [2]. Add value.                                                #\n");
-	printf("# [3]. remove value.                                             #\n");
+	printf("# [3]. Remove value.                                             #\n");
 	printf("# [4]. Search value.                                             #\n");
 	printf("# [5]. See if tree is full.                                      #\n");
 	printf("# [6]. Tree height.                                              #\n");
+	printf("# [7]. Show In/Pre/Post Order.                                   #\n");
 	printf("# [9]. Quit                                                      #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
@@ -158,6 +160,23 @@ void menu(No* node)
 			break;
 		case 6:
 			printf("tree height = %d\n", getHeight(node));
+			break;
+		case 7:
+			printf("[1]. Show tree In order\n");
+			printf("[2]. Show tree Pre order\n");
+			printf("[3]. Show tree Post order\n");
+			printf("> ");
+
+			scanf("%d", &answer);
+
+			if(answer == 1)
+				printInOrder(node);
+			else if(answer == 2)
+				printPreOrder(node);
+			else if(answer == 3)
+				printPostOrder(node);
+			else
+				printf("Opção inválida!\n");
 			break;
 		case 9:
 			exit(1);
