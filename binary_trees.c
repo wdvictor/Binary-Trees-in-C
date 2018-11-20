@@ -42,7 +42,7 @@ No* removeValue(No * root , int value);
 No* initNode(int number);
 No* addNode(No * root, int number);
 int getHeight(No * node);
-No* searchvalue(No * node, int number);
+No* find_node(No * node, int number);
 void isFull(No * node, int size_of_tree);
 void printInOrder(No * root);
 void printPreOrder(No * root);
@@ -50,6 +50,7 @@ void printPostOrder(No * root);
 void freeTree(No * root);
 void showTree(No * root);
 int count_tree_nodes(No * root);
+int search_value(No * root , int value, No * father);
 
 int main(int argc, char const *argv[])
 {
@@ -146,11 +147,11 @@ void menu(No* node)
 			break;
 		case 4:
 			printf("Enter with the value to search\n");
-			int n;
+			int n, temp;
 			scanf("%d", &n);
-			No * temp = searchvalue(node, n);
-			if(temp != NULL) printf("Element found in the tree : %d\n", temp->number);
-			free(temp);
+			No * father = NULL;
+			temp = search_value(node , n, father);
+			printf("Level : %d\n", temp);
 			break;
 		case 5:
 			isFull(node, count_tree_nodes(node));
@@ -337,7 +338,7 @@ No* addNode(No * root, int number)
 	return root;
 }
 
-No * searchvalue(No * node, int number)
+No * find_node(No * node, int number)
 {
 	No * temp = NULL;
 	if (node == NULL)
@@ -351,11 +352,11 @@ No * searchvalue(No * node, int number)
 	}
 	else if (number < node->number)
 	{
-		temp = searchvalue(node->left, number);
+		temp = find_node(node->left, number);
 	}
 	else if (number > node->number)
 	{
-		temp = searchvalue(node->right, number);
+		temp = find_node(node->right, number);
 	}
 	else
 	{
@@ -363,6 +364,7 @@ No * searchvalue(No * node, int number)
 	}
 	return temp;
 }
+
 
 int getHeight(No * node)
 {
@@ -513,4 +515,54 @@ int count_tree_nodes(No * root)
 		total += count_tree_nodes(root->right);
 		return total;
 	}
+}
+
+int search_value(No * root , int value, No * father)
+{
+	
+	int level = 1;
+
+	if(root->number == value)
+	{
+		if(father != NULL)
+		{
+			printf("################################\n" );
+			printf("# Father number %d\n", father->number);
+			if(father->right == root && father->left != NULL)
+			{
+				printf("# Brother Status : Exist\n");
+				printf("# Brother Value : %d\n", father->left->number);
+				printf("################################\n" );
+			}
+			else if (father->left == root && father->right != NULL)
+			{
+				printf("# Brother Status : Exist\n");
+				printf("# Brother Value : %d\n", father->right->number);
+				printf("################################\n" );
+			}
+			else
+			{
+				printf("# Brother Status : None   \n");
+				printf("################################\n" );
+			}
+
+		}
+		return level;
+	}
+	else if(value < root->number)
+	{
+		level += search_value(root->left, value, root);
+		return level;
+	}
+	else if( value > root->number)
+	{			
+		level += search_value(root->right, value, root);
+		return level;
+	}
+	else
+	{
+		printf("Value not found in the tree\n");
+		return 0;
+	}
+	
 }
