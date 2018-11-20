@@ -111,14 +111,16 @@ void menu(No* node)
 	printf("# -------------------------------------------------------------- #\n");
 	printf("# [OPTIONS]:                                                     #\n");
 	printf("# -------------------------------------------------------------- #\n");
-	printf("#                                                                #\n");
 	printf("# [1]. Show Tree.                                                #\n");
 	printf("# [2]. Add value.                                                #\n");
 	printf("# [3]. remove value.                                             #\n");
 	printf("# [4]. Search value.                                             #\n");
 	printf("# [5]. See if tree is full.                                      #\n");
 	printf("# [6]. Tree height.                                              #\n");
-	printf("# [9]. Quit                                                      #\n");
+	printf("# [7]. Print In Order.                                      	 #\n");
+	printf("# [8]. Print Pre Order.                                          #\n");
+	printf("# [9]. Print Post Order.                                         #\n");
+	printf("# [10]. Quit                                                     #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
 
@@ -160,7 +162,16 @@ void menu(No* node)
 		case 6:
 			printf("tree height = %d\n", getHeight(node));
 			break;
+		case 7:
+			printInOrder(node);
+			break;
+		case 8:
+			printPreOrder(node);
+			break;
 		case 9:
+			printPostOrder(node);
+			break;
+		case 10:
 			exit(1);
 		default:
 			printf("Unknown command, please try again.\n");
@@ -169,7 +180,7 @@ void menu(No* node)
 
 		printf("\n");
 
-	} while (option != 9);
+	} while (option != 10);
 }
 
 char* getFileName(int index)
