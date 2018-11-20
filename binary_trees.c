@@ -437,7 +437,7 @@ No* removeValue(No * root , int value)
 	
 	if(root == NULL)
 	{
-		printf("There is no elements in  the tree\n");
+		printf("Element not found or the tree is empty\n");
 		return NULL;
 	}
 	else if(value < root->number)
@@ -470,6 +470,7 @@ No* removeValue(No * root , int value)
 			while(temp->right != NULL) temp = temp->right;
 			root->number = temp->number;
 			root->left = removeValue(root->left , root->number);
+			free(temp);
 		}
 
 	}
