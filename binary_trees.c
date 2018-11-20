@@ -18,9 +18,10 @@
 
 /* Define's */
 #define FILE_NAME			"./BSTs/bst%d.txt"		
+#define MAX_BST_QUANTITY	6
 
 /* Struct's */
-struct No 
+struct No
 {
 	int number;
 
@@ -34,11 +35,12 @@ typedef struct No No;
 
 
 /* Functions */
+char* menuFile();
 void menu(No* node);
 
 char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
-No* removeValue(No * root , int value);
+No* removeValue(No * root, int value);
 No* initNode(int number);
 No* addNode(No * root, int number);
 int getHeight(No * node);
@@ -50,14 +52,14 @@ void printPostOrder(No * root);
 void freeTree(No * root);
 void showTree(No * root);
 int count_tree_nodes(No * root);
-int search_value(No * root , int value, No * father);
+int search_value(No * root, int value, No * father);
 
 int main(int argc, char const *argv[])
 {
 	int error = 0;
 
-	// TODO : Add option for choice what index will be to loaded.
-	char* fileName = getFileName(1);
+	//char* fileName = getFileName(1);
+	char* fileName = menuFile();
 
 	// Read file.
 	No* node = loadTreeFromFile(fileName, &error);
@@ -66,7 +68,7 @@ int main(int argc, char const *argv[])
 		switch (error)
 		{
 		case -1:
-			printf("Failed to read %s file.\n", fileName);
+			printf("File [%s] not found.\n", fileName);
 			break;
 		case -2:
 			printf("Failed to load file, size is 0.\n");
@@ -101,6 +103,80 @@ int main(int argc, char const *argv[])
 	menu(node);
 
 	return 0;
+}
+
+char* menuFile()
+{
+	// Clear console output.
+#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+	system("clear");
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+	system("cls");
+#endif
+
+	printf("##################################################################\n");
+	printf("# -------------------------------------------------------------- #\n");
+	printf("# [OPTION FOR LOAD BST FILE]:                                    #\n");
+	printf("# -------------------------------------------------------------- #\n");
+	printf("#                                                                #\n");
+	printf("# [1]. Choice number between [1 ~ %d]                             #\n", MAX_BST_QUANTITY);
+	printf("# [2]. Custom file.                                              #\n");
+	printf("# [9]. Quit program.                                             #\n");
+	printf("#                                                                #\n");
+	printf("##################################################################\n\n");
+
+	int option = -1;
+
+	do
+	{
+		printf("> ");
+		scanf("%d", &option);
+		printf("\n");
+
+		switch (option)
+		{
+		case 1:
+		{
+			int number;
+			int valid = 0;
+
+			printf("# Choice number between [1 ~ %d]                                  #\n", MAX_BST_QUANTITY);
+
+			do
+			{
+				printf("> ");
+				scanf("%d", &number);
+				printf("\n");
+
+				valid = (number >= 1 && number <= MAX_BST_QUANTITY) ? 1 : 0;
+
+			} while (valid == 0);
+
+			return getFileName(number);
+		}
+		case 2:
+		{
+			char* name = (char*)malloc(sizeof(char) * _MAX_PATH);
+			printf("# Digit name of file. (example: ./BSTs/customBSTFile.txt)        #\n");
+
+			printf("> ");
+			scanf(" %[^\n]s", name);
+			printf("\n");
+
+			return name;
+		}
+		default:
+			printf("Unknown command, please try again.\n");
+			break;
+		}
+
+		printf("\n");
+
+	} while (option != 9);
+
+	return NULL;
 }
 
 void menu(No* node)
@@ -140,22 +216,24 @@ void menu(No* node)
 		case 2:
 			printf("Enter with the value\n");
 			scanf("%d", &input_number);
-			node = addNode(node , input_number);
+			node = addNode(node, input_number);
 			break;
 		case 3:
 			printf("Enter with the value to remove\n");
 			scanf("%d", &input_number);
-			node = removeValue(node , input_number);
+			node = removeValue(node, input_number);
 			break;
 		case 4:
+		{
 			printf("Enter with the value to search\n");
 			int n, temp;
 			scanf("%d", &n);
 			No * father = NULL;
-			temp = search_value(node , n, father);
+			temp = search_value(node, n, father);
 			printf("Level : %d\n", temp);
-			printf("################################\n" );
-			break;
+			printf("################################\n");
+		}
+		break;
 		case 5:
 			isFull(node, count_tree_nodes(node));
 			break;
@@ -287,14 +365,14 @@ No* loadTreeFromFile(char* fileName, int* error)
 			}
 
 			// Copy values in string.
-			for(k = 0; k <= diff; k++)
+			for (k = 0; k <= diff; k++)
 			{
 				tmpBuffer[k] = buffer[position + k];
 			}
 
 			// Now convert this value in string to int.
 			currentValue = atoi(tmpBuffer);
-			
+
 			// Let to add value in our tree.
 			node = addNode(node, currentValue);
 
@@ -326,7 +404,7 @@ No* initNode(int number)
 	return node;
 }
 
-No* addNode(No * root, int number) 
+No* addNode(No * root, int number)
 {
 	// Check if root is already initialized, if not, let to init.
 	if (root == NULL)
@@ -398,14 +476,304 @@ int getHeight(No * node)
 	}
 }
 
+typedef struct sPRINT_POSITION_TREE
+{
+	int x;
+	int y;
+
+	char text[256];
+} PrintPositionTree, *PrintPositionTreePtr;
+
+typedef struct sLIST
+{
+	PrintPositionTreePtr data;
+
+	struct sLIST* prev;
+	struct sLIST* next;
+} List, *ListPtr;
+
+void printSpaces(int count)
+{
+	int i = 0;
+	for (i = 0; i < count; i++)
+	{
+		printf(" ");
+	}
+}
+
+ListPtr CreateList(PrintPositionTreePtr data)
+{
+	ListPtr lst = (ListPtr)malloc(sizeof(List));
+	if (lst == NULL)
+	{
+		printf("Failed to alloc!\n");
+		return NULL;
+	}
+
+	lst->data = data;
+	lst->prev = NULL;
+	lst->next = NULL;
+
+	return lst;
+}
+
+void Push(ListPtr* current, PrintPositionTreePtr data)
+{
+	ListPtr lst = CreateList(data);
+
+	lst->next = (*current);
+	lst->prev = NULL;
+
+	if ((*current) != NULL)
+		(*current)->prev = lst;
+
+	(*current) = lst;
+}
+
+ListPtr Pop(ListPtr* current, ListPtr lstDelete)
+{
+	if ((*current) == NULL ||
+		lstDelete == NULL)
+	{
+		printf("Failed to remove.\n");
+		return NULL;
+	}
+
+	if ((*current) == lstDelete)
+	{
+		(*current) = lstDelete->next;
+	}
+
+	if (lstDelete->next != NULL)
+	{
+		lstDelete->next->prev = lstDelete->prev;
+	}
+
+	if (lstDelete->prev != NULL)
+	{
+		lstDelete->prev->next = lstDelete->next;
+	}
+
+	free(lstDelete);
+
+	return (*current);
+}
+
+void generateTreeListText(No *root, ListPtr* lst, int h, int H, int mid)
+{
+	if (root == NULL)
+		return;
+
+	PrintPositionTreePtr data = NULL;
+
+	int x = mid, i;
+	int y = 1 + (H*(H + 1)) / 2 - (h*(h + 1)) / 2;
+
+	data = (PrintPositionTreePtr)malloc(sizeof(PrintPositionTree));
+
+	data->x = x;
+	data->y = y;
+
+	sprintf(data->text, "%d", root->number);
+
+	Push(&(*lst), data);
+
+	if (root->right != NULL)
+	{
+		for (i = 1; i <= (h - 1); i++)
+		{
+			data = (PrintPositionTreePtr)malloc(sizeof(PrintPositionTree));
+			data->x = mid + i;
+			data->y = y + i;
+
+			sprintf(data->text, "\\");
+
+			Push(&(*lst), data);
+		}
+
+		generateTreeListText(root->right, lst, h - 1, H, mid + (h));
+	}
+
+	if (root->left != NULL)
+	{
+		for (i = 1; i <= (h - 1); i++)
+		{
+			data = (PrintPositionTreePtr)malloc(sizeof(PrintPositionTree));
+			data->x = mid - i;
+			data->y = y + i;
+
+			sprintf(data->text, "/");
+
+			Push(&(*lst), data);
+		}
+
+		generateTreeListText(root->left, lst, h - 1, H, mid - (h));
+	}
+
+}
+
+ListPtr SortByY(ListPtr current)
+{
+	ListPtr auxLst = NULL;
+
+	while (current != NULL)
+	{
+		ListPtr nextLst = current->next;
+
+		current->prev = NULL;
+		current->next = NULL;
+
+		if (auxLst == NULL)
+		{
+			auxLst = current;
+		}
+		else if (auxLst->data->y >= current->data->y)
+		{
+			current->next = auxLst;
+			current->next->prev = current;
+
+			auxLst = current;
+		}
+		else
+		{
+			ListPtr tmpLst = auxLst;
+
+			while (tmpLst->next != NULL && tmpLst->next->data->y < current->data->y)
+				tmpLst = tmpLst->next;
+
+			current->next = tmpLst->next;
+
+			if (tmpLst->next != NULL)
+				current->next->prev = current;
+
+			tmpLst->next = current;
+			current->prev = tmpLst;
+		}
+
+		current = nextLst;
+	}
+
+	return auxLst;
+}
+
+ListPtr SortByX(ListPtr current)
+{
+	ListPtr auxLst = NULL;
+
+	while (current != NULL)
+	{
+		ListPtr nextLst = current->next;
+
+		current->prev = NULL;
+		current->next = NULL;
+
+		if (auxLst == NULL)
+		{
+			auxLst = current;
+		}
+		else if (auxLst->data->x >= current->data->x)
+		{
+			current->next = auxLst;
+			current->next->prev = current;
+
+			auxLst = current;
+		}
+		else
+		{
+			ListPtr tmpLst = auxLst;
+
+			while (tmpLst->next != NULL && tmpLst->next->data->x < current->data->x)
+				tmpLst = tmpLst->next;
+
+			current->next = tmpLst->next;
+
+			if (tmpLst->next != NULL)
+				current->next->prev = current;
+
+			tmpLst->next = current;
+			current->prev = tmpLst;
+		}
+
+		current = nextLst;
+	}
+
+	return auxLst;
+}
+
+ListPtr getListByPositionY(ListPtr current, int Y)
+{
+	ListPtr tmpList = NULL;
+
+	while (current != NULL)
+	{
+		if (current->data->y == Y)
+		{
+			Push(&tmpList, current->data);
+		}
+
+		current = current->next;
+	}
+
+	return tmpList;
+}
+
+void displayTree(ListPtr list)
+{
+	if (list == NULL)
+		return;
+
+	int i;
+	for (i = 0; i < 1000; i++)
+	{
+		ListPtr lstY = getListByPositionY(list, i);
+		lstY = SortByX(lstY);
+
+		if (lstY == NULL)
+		{
+			continue;
+		}
+		else
+		{
+			int i = 0;
+			int space = 0;
+			int strLen = 0;
+
+			while (lstY != NULL)
+			{
+				if (lstY->prev == NULL)
+				{
+					printSpaces(lstY->data->x);
+				}
+				else
+				{
+					strLen = strlen(lstY->data->text) - 1;
+					space = ((lstY->data->x - lstY->prev->data->x) - i / 2) - strLen;
+					printSpaces(space);
+				}
+
+				printf("%s", lstY->data->text);
+
+				if (lstY->next == NULL)
+				{
+					printf("\n");
+				}
+
+				i++;
+				lstY = lstY->next;
+			}
+		}
+	}
+}
+
 void showTree(No * root)
 {
-	if (root != NULL)
-	{
-		printf("%d\n", root->number);
-		showTree(root->right);
-		showTree(root->left);
-	}
+	ListPtr list = NULL;
+	int h = getHeight(root);
+	generateTreeListText(root, &list, h, h, h*(h + 1) / 2);
+
+	list = SortByY(list);
+
+	displayTree(list);
 }
 
 void printInOrder(No * root)
@@ -448,60 +816,100 @@ void freeTree(No * root)
 	free(root);
 }
 
-No* removeValue(No * root , int value)
+No * findLeft(No* root)
 {
-	
-	if(root == NULL)
-	{
-		printf("Element not found or the tree is empty\n");
-		return NULL;
-	}
-	else if(value < root->number)
+	return (root == NULL) ? NULL : (root->left == NULL) ? root : findLeft(root->left);
+}
+
+No* removeValue(No * root, int value)
+{
+
+
+	if (root == NULL) return NULL;
+
+	if (value < root->number)
 	{
 		root->left = removeValue(root->left, value);
 	}
-	else if(value > root->number)
+	else if (value > root->number)
 	{
 		root->right = removeValue(root->right, value);
 	}
+	else if (root->left && root->right)
+	{
+		No * auxNode = findLeft(root->right);
+
+		root->number = auxNode->number;
+		root->right = removeValue(root->right, root->number);
+	}
 	else
 	{
-		
-		if(root->left == NULL && root->right == NULL)
-		{//leaf		
-			free(root);
-			root = NULL;
+		No * auxNode = root;
+		if (root->left == NULL)
+		{
+			root = root->right;
 		}
-		else if( root->left == NULL)
-		{//in case of right children		
-			root = root->right;		
-		}
-		else if(root->right == NULL)
-		{//in case of left children	
-			root = root->left;	
-		}
-		else
-		{//in case of both children exist
-			No * temp = root->left;
-			while(temp->right != NULL) temp = temp->right;
-			root->number = temp->number;
-			root->left = removeValue(root->left , root->number);
-			free(temp);
+		else if (root->right == NULL)
+		{
+			root = root->left;
 		}
 
+		free(auxNode);
 	}
+
 	return root;
-	
+
+	//if (root == NULL)
+	//{
+	//	printf("Element not found or the tree is empty\n");
+	//	return NULL;
+	//}
+	//else if (value < root->number)
+	//{
+	//	root->left = removeValue(root->left, value);
+	//}
+	//else if (value > root->number)
+	//{
+	//	root->right = removeValue(root->right, value);
+	//}
+	//else
+	//{
+	//
+	//	if (root->left == NULL && root->right == NULL)
+	//	{//leaf		
+	//		free(root);
+	//		root = NULL;
+	//	}
+	//	else if (root->left == NULL)
+	//	{//in case of right children		
+	//		root = root->right;
+	//	}
+	//	else if (root->right == NULL)
+	//	{//in case of left children	
+	//		root = root->left;
+	//	}
+	//	else
+	//	{//in case of both children exist
+	//		No * temp = root->left;
+	//		while (temp->right != NULL) temp = temp->right;
+	//		root->number = temp->number;
+	//		root->left = removeValue(root->left, root->number);
+	//		free(temp);
+	//	}
+	//
+	//}
+	//return root;
+
 }
 
 void isFull(No * node, int tree_total_elements)
 {
 	/*
-		the tatic where is use the mathematic fuction to see if the tree is full
-		the Sn = (2^h - 1)
+	the tatic where is use the mathematic fuction to see if the tree is full
+	the Sn = (2^h - 1)
 	*/
 	int total_elements = (pow(2, getHeight(node)) - 1);
-	if(total_elements == tree_total_elements)
+	if (total_elements == tree_total_elements)
 	{
 		printf("Is full\n");
 	}
@@ -509,17 +917,17 @@ void isFull(No * node, int tree_total_elements)
 	{
 		printf("Is not full\n");
 	}
-	
+
 }
 
 int count_tree_nodes(No * root)
 {
 	/*
-		the count must start with 1 because the recursive fuction jump
+	the count must start with 1 because the recursive fuction jump
 	the mian root node
 	*/
 	int total = 1;
-	if(root == NULL)
+	if (root == NULL)
 	{
 		return 0;
 	}
@@ -531,27 +939,27 @@ int count_tree_nodes(No * root)
 	}
 }
 
-int search_value(No * root , int value, No * father)
+int search_value(No * root, int value, No * father)
 {
 
 	int level = 1;
 
-	if(root->number == value)
+	if (root->number == value)
 	{
-		if(father != NULL)
+		if (father != NULL)
 		{
-			printf("################################\n" );
+			printf("################################\n");
 			printf("# Father number %d\n", father->number);
-			if(father->right == root && father->left != NULL)
+			if (father->right == root && father->left != NULL)
 			{
 				printf("# Brother Status : Exist\n");
 				printf("# Brother Value : %d\n", father->left->number);
-				
+
 			}
 			else if (father->left == root && father->right != NULL)
 			{
 				printf("# Brother Status : Exist\n");
-				printf("# Brother Value : %d\n", father->right->number);			
+				printf("# Brother Value : %d\n", father->right->number);
 			}
 			else
 			{
@@ -561,13 +969,13 @@ int search_value(No * root , int value, No * father)
 		}
 		return level;
 	}
-	else if(value < root->number)
+	else if (value < root->number)
 	{
 		level += search_value(root->left, value, root);
 		return level;
 	}
-	else if( value > root->number)
-	{			
+	else if (value > root->number)
+	{
 		level += search_value(root->right, value, root);
 		return level;
 	}
@@ -576,5 +984,5 @@ int search_value(No * root , int value, No * father)
 		printf("Value not found in the tree\n");
 		return 0;
 	}
-	
+
 }
