@@ -25,26 +25,30 @@ struct No
 	struct No * right;
 };
 
+
+
 typedef struct No No;
+
 
 /* Functions */
 void menu(No* node);
 
 char* getFileName(int index);
 No* loadTreeFromFile(char* fileName, int* error);
-void removeValue(No * root , int value);
+No* removeValue(No * root , int value);
 No* initNode(int number);
 No* addNode(No * root, int number);
 int getHeight(No * node);
-void searchvalue(No * node, int number);
+No* searchvalue(No * node, int number);
+int isFull(No * node, int size_of_tree);
 
 void printInOrder(No * root);
 void printPreOrder(No * root);
 void printPostOrder(No * root);
 void freeTree(No * root);
-
+int file_size(char * fileName);
 void showTree(No * root);
-
+int tree_size(No * node);
 int main(int argc, char const *argv[])
 {
 	int error = 0;
@@ -109,6 +113,7 @@ void menu(No* node)
 	printf("# [2]. Add value.                                                #\n");
 	printf("# [3]. remove value.                                             #\n");
 	printf("# [4]. Search value.                                             #\n");
+	printf("# [5]. See if tree is full.                                      #\n");
 	printf("# [9]. Quit                                                      #\n");
 	printf("#                                                                #\n");
 	printf("##################################################################\n");
@@ -134,7 +139,17 @@ void menu(No* node)
 		case 3:
 			printf("Enter with the value to remove\n");
 			scanf("%d", &input_number);
-			removeValue(node , input_number);
+			node = removeValue(node , input_number);
+			break;
+		case 5:
+			if(isFull(node, file_size(getFileName(1))) == 1)
+			{
+				printf("Is full\n");
+			}
+			else
+			{
+				printf("Is not full\n");
+			}
 			break;
 
 		case 9:
@@ -152,7 +167,7 @@ void menu(No* node)
 char* getFileName(int index)
 {
 	int len = strlen(FILE_NAME);
-	char* fileName = (char*)malloc(sizeof(char) * len - 1);
+	char* fileName = (char*)malloc(sizeof(char) * (len - 1));
 
 	sprintf(fileName, FILE_NAME, index);
 	return fileName;
@@ -316,30 +331,31 @@ No* addNode(No * root, int number)
 	return root;
 }
 
-void searchvalue(No * node, int number)
+No * searchvalue(No * node, int number)
 {
+	No * temp = NULL;
 	if (node == NULL)
 	{
 		printf("There are no elements in the tree\n");
-		return;
+		return NULL;
 	}
 	else if (number == node->number)
 	{
-		printf("%d\n", node->number);
-		return;
+		return node;
 	}
 	else if (number < node->number)
 	{
-		searchvalue(node->left, number);
+		temp = searchvalue(node->left, number);
 	}
 	else if (number > node->number)
 	{
-		searchvalue(node->right, number);
+		temp = searchvalue(node->right, number);
 	}
 	else
 	{
 		printf("There are no such element in the tree\n");
 	}
+	return temp;
 }
 
 int getHeight(No * node)
@@ -410,49 +426,91 @@ void freeTree(No * root)
 	free(root);
 }
 
-void removeValue(No * root , int value)
+No* removeValue(No * root , int value)
 {
 	
 	if(root == NULL)
 	{
-		printf("There are no elements in the tree\n");
-		return;
-	}
-	else if(value == root->number)
-	{
-		
-		No * temp = root; 
-
-		if(root->left == NULL){
-			if(root->right == NULL)
-			{
-				root->number = NULL;
-				root->left = NULL;
-				root->right = NULL;
-				return;
-			}
-			root->number = root->right->number;
-			return;
-		}
-		temp = temp->left;
-		while(temp->right != NULL){
-			temp = temp->right;
-		}
-		root->number = temp->number;
-		return;
-
+		printf("There is no elements in  the tree\n");
+		return NULL;
 	}
 	else if(value < root->number)
 	{
-	removeValue(root->left, value);
+		root->left = removeValue(root->left, value);
 	}
-	else if( value >= root->number)
+	else if(value > root->number)
 	{
-	removeValue(root->right, value);
+		root->right = removeValue(root->right, value);
 	}
 	else
 	{
-		printf("There is no such element in the tree\n");
-	}
+		
+		if(root->left == NULL && root->right == NULL)
+		{//leaf		
+			free(root);
+			root = NULL;
+		}
+		else if( root->left == NULL)
+		{//in case of right children		
+			root = root->right;		
+		}
+		else if(root->right == NULL)
+		{//in case of left children	
+			root = root->left;	
+		}
+		else
+		{//in case of both children exist
+			No * temp = root->left;
+			while(temp->right != NULL) temp = temp->right;
+			root->number = temp->number;
+			root->left = removeValue(root->left , root->number);
+		}
 
+	}
+	return root;
+	
+}
+
+
+int file_size(char * fileName)
+{
+	FILE * fp = fopen(getFileName(1),"r");
+	char c;
+	int total_numbers = 0;
+
+	while(c = fgetc(fp))
+	{
+		if(c == EOF){
+			total_numbers++;
+			break;
+		}
+		if(c == ' ')
+		{
+			total_numbers++;
+		}
+	}
+	return total_numbers;
+}
+
+int isFull(No * node, int file_size)
+{
+
+	if(tree_size(node) == file_size)
+	{
+		return 1; //true
+	}
+	else
+	{
+		return 0; //false
+	}
+}
+
+int tree_size(No * node)
+{
+	//the size must start with 1 because the main root node do not count in the process
+	int size = 1;
+	if(node == NULL) return 0;
+	size += tree_size(node->left);
+	size += tree_size(node->right);
+	return size;
 }
